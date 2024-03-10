@@ -50,20 +50,20 @@ def make_model_and_param_grid(
 	elif model_name == 'Linear_SVC':
 	
 		model = Pipeline([('scale',StandardScaler()),
-			('clf',LinearSVC(max_iter = 10000, class_weight = 'balanced'))])
+			('clf',LinearSVC(max_iter = 10000, class_weight = 'balanced',dual ='auto'))])
 		param_grid = {
 			'clf__penalty':['l1','l2'],
 			'clf__C':[10**j for j in np.linspace(-5,0.5,20)],
 		}
 	elif model_name == 'GradientBoosting':
 		model = Pipeline([('scale',StandardScaler()),
-			('clf',GradientBoostingClassifier(max_iter = 10000, class_weight = 'balanced'))])
+			('clf',GradientBoostingClassifier())])
 		param_grid = {
 			'clf__loss':['log_loss','exponential'],
-			'clf__C':[10**j for j in np.linspace(-5,0.5,20)],
 			'clf__n_estimators':[2**j for j in range(9)],
 			'clf__max_depth':[2**j for j in range(4)],
-			'clf_min_samples_leaf':[1,2,3,4,5],
+			'clf__max_features':['sqrt','log2'],
+			'clf__min_samples_leaf':[1,2,3,4,5],
 			'clf__learning_rate':[10**j for j in np.linspace(-5, 0,20)]
 		}
 
