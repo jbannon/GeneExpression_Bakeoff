@@ -50,7 +50,7 @@ def make_model_and_param_grid(
 	elif model_name == 'Linear_SVC':
 	
 		model = Pipeline([('scale',StandardScaler()),
-			('clf',LinearSVC(max_iter = 10000, class_weight = 'balanced',dual ='auto'))])
+			('clf',LinearSVC(max_iter = 1000000, class_weight = 'balanced',dual ='auto'))])
 		param_grid = {
 			'clf__penalty':['l1','l2'],
 			'clf__C':[10**j for j in np.linspace(-5,0.5,20)],

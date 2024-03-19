@@ -35,21 +35,23 @@ def main():
 	else:
 		group = "PANCAN"
 
-
+	seed:int = 1234
 	model_name = args['model']
 	num_iters = int(args['niter'])
+	num_perms:int = 50
 	model, param_grid = mu.make_model_and_param_grid(model_name)	
 
-	seed:int = 1234
+	rng = np.random.default_rng(seed)
 	rstate = np.random.RandomState(seed)
-
 
 	print("../expression/{ds}/{d}/{g}/expression_full.csv".format(ds=ds, d=drug,g=group))
 	expression = pd.read_csv("../expression/{ds}/{d}/{g}/expression_full.csv".format(ds=ds, d=drug,g=group))
 	response = pd.read_csv("../expression/{ds}/{d}/{g}/response.csv".format(ds=ds, d=drug,g= group))
 	features = pd.read_csv("../expression/{ds}/{d}/{g}/features.csv".format(ds=ds, d=drug,g = group))
 	
-	y = response['Response'].values	
+
+
+	
 	results = defaultdict(list)
 	os.makedirs("../results/{d}/".format(d=drug),exist_ok = True)
 	for gs in genesets:
@@ -64,29 +66,34 @@ def main():
 			
 		else:
 			X = features[features.columns[1:]].values
+		y = response['Response'].values
 		for stratify in [True,False]:
-			for i in tqdm.tqdm(range(num_iters)):
-				if stratify:
-					X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, stratify = y,random_state = rstate )
-				else:
-					X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25,random_state = rstate)
-				clf = GridSearchCV(model, param_grid)
-				clf.fit(X_train,y_train)
-				preds = clf.predict(X_test)
-				results['iter'].append(i)
-				results['geneset'].append(gs)
-				results['stratified'].append(stratify)
-				results['model'].append(model_name)
-				results['test accuracy'].append(np.round(accuracy_score(y_test,preds),3))
-				results['test balanced accuracy'].append(np.round(balanced_accuracy_score(y_test,preds),3))
-				if model_name in ['RBF_SVC',"Poly_SVC",'Linear_SVC']:
-					results['Test_ROC'] = -1
-				else:
-					prob_preds = clf.predict_proba(X_test)
+			for perm in tqdm.tqdm(range(num_perms)):
+
+				for i in tqdm.tqdm(range(num_iters)):
+					if stratify:
+						X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, stratify = y, random_state = rstate)
+					else:
+						X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25,random_state = rstate)
+					
+					clf = GridSearchCV(model, param_grid)
+					clf.fit(X_train,y_train)
+					preds = clf.predict(X_test)
+					results['iter'].append(i)
+					results['perm'].append(perm)
+					results['geneset'].append(gs)
+					results['stratified'].append(stratify)
+					results['model'].append(model_name)
+					results['test accuracy'].append(np.round(accuracy_score(y_test,preds),3))
+					results['test balanced accuracy'].append(np.round(balanced_accuracy_score(y_test,preds),3))
+					if model_name in ['RBF_SVC',"Poly_SVC",'Linear_SVC']:
+						results['Test_ROC'] = -1
+					else:
+						prob_preds = clf.predict_proba(X_test)
 					results['Test_ROC'].append(np.round(roc_auc_score(y_test,prob_preds[:,1]),3))
 	results = pd.DataFrame(results)
 	
-	results.to_csv("../results/{d}/{m}.csv".format(d=drug, m = model_name))
+	results.to_csv("../results/{d}/{m}_perm.csv".format(d=drug, m = model_name))
 
 if __name__ == '__main__':
 	main()
