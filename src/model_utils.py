@@ -15,10 +15,15 @@ def make_model_and_param_grid(
 	if model_name == "RandomForest":
 	
 		model = Pipeline([('clf',RandomForestClassifier(class_weight = 'balanced'))])
+		# param_grid = {
+		# 	'clf__n_estimators':[2**j for j in range(6)],
+		# 	'clf__max_depth':[2**j for j in range(6)],
+		# 	'clf__min_samples_leaf':[3,5,7]
+		# }
 		param_grid = {
-			'clf__n_estimators':[2**j for j in range(9)],
-			'clf__max_depth':[2**j for j in range(4)],
-			'clf__min_samples_leaf':[1,2,3,4,5]
+			'clf__n_estimators':[2**j for j in range(2)],
+			'clf__max_depth':[2**j for j in range(2)],
+			'clf__min_samples_leaf':[1,2]
 		}
 	
 	elif model_name == "LogisticRegression":
@@ -27,7 +32,7 @@ def make_model_and_param_grid(
 			('clf',LogisticRegression(max_iter = 10000, solver = 'liblinear', class_weight = 'balanced'))])
 		param_grid = {
 			'clf__penalty':['l1','l2'],
-			'clf__C':[10**j for j in np.linspace(-5,0.5,20)]
+			'clf__C':[10**j for j in np.linspace(-5,0.5,2)]
 		}
 	
 	elif model_name == "RBF_SVC":

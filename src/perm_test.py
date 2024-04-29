@@ -38,13 +38,14 @@ def main():
 	seed:int = 1234
 	model_name = args['model']
 	num_iters = int(args['niter'])
-	num_perms:int = 50
+	num_perms:int = 5
 	model, param_grid = mu.make_model_and_param_grid(model_name)	
 
 	rng = np.random.default_rng(seed)
 	rstate = np.random.RandomState(seed)
 
 	print("../expression/{ds}/{d}/{g}/expression_full.csv".format(ds=ds, d=drug,g=group))
+	
 	expression = pd.read_csv("../expression/{ds}/{d}/{g}/expression_full.csv".format(ds=ds, d=drug,g=group))
 	response = pd.read_csv("../expression/{ds}/{d}/{g}/response.csv".format(ds=ds, d=drug,g= group))
 	features = pd.read_csv("../expression/{ds}/{d}/{g}/features.csv".format(ds=ds, d=drug,g = group))
@@ -54,6 +55,7 @@ def main():
 	
 	results = defaultdict(list)
 	os.makedirs("../results/{d}/".format(d=drug),exist_ok = True)
+	
 	for gs in genesets:
 		if gs != 'FEATURES':
 			with open("../genesets/{g}.txt".format(g=gs),"r") as istream:
