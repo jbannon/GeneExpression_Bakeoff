@@ -15,16 +15,16 @@ def make_model_and_param_grid(
 	if model_name == "RandomForest":
 	
 		model = Pipeline([('clf',RandomForestClassifier(class_weight = 'balanced'))])
-		# param_grid = {
-		# 	'clf__n_estimators':[2**j for j in range(6)],
-		# 	'clf__max_depth':[2**j for j in range(6)],
-		# 	'clf__min_samples_leaf':[3,5,7]
-		# }
 		param_grid = {
-			'clf__n_estimators':[2**j for j in range(2)],
-			'clf__max_depth':[2**j for j in range(2)],
-			'clf__min_samples_leaf':[1,2]
+			'clf__n_estimators':[2**j for j in range(6)],
+			'clf__max_depth':[2**j for j in range(6)],
+			'clf__min_samples_leaf':[3,5,7]
 		}
+		# param_grid = {
+		# 	'clf__n_estimators':[2**j for j in range(2)],
+		# 	'clf__max_depth':[2**j for j in range(2)],
+		# 	'clf__min_samples_leaf':[1,2]
+		# }
 	
 	elif model_name == "LogisticRegression":
 		
