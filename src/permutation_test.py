@@ -47,7 +47,7 @@ def main():
 	os.makedirs(res_dir,exist_ok = True)
 	
 	num_balanced_datasets:int = 10
-	num_permutations:int = 3
+	num_permutations:int = 50
 	
 	icis = ['Atezo','Pembro','Ipi', 'Nivo']
 	ds_string = "cri" if drug in icis else "ccle"
