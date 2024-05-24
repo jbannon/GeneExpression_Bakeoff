@@ -7,6 +7,9 @@
 #SBATCH --time=96:00:00
 #SBATCH --mem=20GB
 #SBATCH --array=0-5
+#SBATCH --mail-type=BEGIN,END,FAIL
+#SBATCH --mail-user=jjb509@nyu.edu
+#SBATCH -o ./slurmouts/Nivo/output_%j.out
 
 module purge
 

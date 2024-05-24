@@ -7,6 +7,9 @@
 #SBATCH --time=96:00:00
 #SBATCH --mem=20GB
 #SBATCH --array=0-3
+#SBATCH --mail-type=BEGIN,END,FAIL
+#SBATCH --mail-user=jjb509@nyu.edu
+#SBATCH -o ./slurmouts/balanced_%j.out
 
 module purge
 

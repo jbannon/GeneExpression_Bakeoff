@@ -7,6 +7,8 @@
 #SBATCH --time=96:00:00
 #SBATCH --mem=20GB
 #SBATCH --array=0-5
+#SBATCH --mail-type=BEGIN,END
+#SBATCH --mail-user=jjb509@nyu.edu
 
 module purge
 
