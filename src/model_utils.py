@@ -9,12 +9,15 @@ from sklearn.pipeline import Pipeline
 
 
 def make_model_and_param_grid(
-	model_name:str
+	model_name:str,
+	balanced_weights:bool = False
 	):
+	
+	bal_status = 'balanced' if balanced_weights else None
 	
 	if model_name == "RandomForest":
 	
-		model = Pipeline([('clf',RandomForestClassifier(class_weight = 'balanced'))])
+		model = Pipeline([('clf',RandomForestClassifier(class_weight = bal_status))])
 		param_grid = {
 			'clf__n_estimators':[2**j for j in range(6)],
 			'clf__max_depth':[2**j for j in range(6)],
@@ -29,10 +32,10 @@ def make_model_and_param_grid(
 	elif model_name == "LogisticRegression":
 		
 		model = Pipeline([('scale',StandardScaler()),
-			('clf',LogisticRegression(max_iter = 10000, solver = 'liblinear', class_weight = 'balanced'))])
+			('clf',LogisticRegression(max_iter = 10000, solver = 'liblinear', class_weight = bal_status))])
 		param_grid = {
 			'clf__penalty':['l1','l2'],
-			'clf__C':[10**j for j in np.linspace(-5,0.5,2)]
+			'clf__C':[10**j for j in np.linspace(-5,0.5,50)]
 		}
 	
 	elif model_name == "RBF_SVC":

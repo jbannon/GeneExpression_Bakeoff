@@ -15,7 +15,7 @@ from sklearn.model_selection import LeaveOneOut
 from sklearn.metrics import accuracy_score, roc_auc_score
 import argparse
 import permutation_utils as pu
-
+import utils 
 
 
 
@@ -47,7 +47,7 @@ def main():
 	os.makedirs(res_dir,exist_ok = True)
 	
 	num_balanced_datasets:int = 10
-	num_permutations:int = 50
+	num_permutations:int = 3
 	
 	icis = ['Atezo','Pembro','Ipi', 'Nivo']
 	ds_string = "cri" if drug in icis else "ccle"
@@ -58,7 +58,7 @@ def main():
 
 
 
-	genesets:List[str] = ['LINCS','COSMIC','FEATURES']
+	genesets:List[str] = ['EXPRESSION','FEATURES']
 
 	expr_file = f"../expression/{ds_string}/{drug}/{tissue}/expression_full.csv"
 	resp_file = f"../expression/{ds_string}/{drug}/{tissue}/response.csv"
@@ -72,14 +72,16 @@ def main():
 
 	full_results = []
 	for gs in tqdm.tqdm(genesets,leave= False):
-		if gs != 'FEATURES':
+		if gs =='EXPRESSION':
 			
-			with open("../genesets/{g}.txt".format(g=gs),"r") as istream:
-				lines = istream.readlines()
-			lines = [x.rstrip() for x in lines]
 
 
-			keep_cols = [x for x in expression.columns if x in lines]
+			# with open("../genesets/{g}.txt".format(g=gs),"r") as istream:
+			# 	lines = istream.readlines()
+			# lines = [x.rstrip() for x in lines]
+			genes = utils.fetch_union_genesets()
+
+			keep_cols = [x for x in expression.columns if x in genes]
 			X_full = np.log2(expression[keep_cols].values+1)
 		
 		else:
