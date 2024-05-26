@@ -6,7 +6,7 @@
 #SBATCH --cpus-per-task=2
 #SBATCH --time=96:00:00
 #SBATCH --mem=20GB
-#SBATCH --array=0-3
+#SBATCH --array=0-2
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=jjb509@nyu.edu
 #SBATCH -o ./slurmouts/balanced_%j.out
@@ -14,7 +14,7 @@
 module purge
 
 
-drugs=(Atezo Pembro Nivo Ipi+Pembro)
+drugs=(Atezo Pembro Nivo)
 
 singularity exec --nv \
             --overlay /scratch/jjb509/GeneExpression_Bakeoff/src/my_overlay.ext3:ro \
