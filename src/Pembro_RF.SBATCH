@@ -9,7 +9,7 @@
 #SBATCH --array=0-5
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=jjb509@nyu.edu
-#SBATCH -o ./slurmouts/Pembro/output_%j.out
+#SBATCH -o ./slurmouts/Pembro/RF_%j.out
 
 module purge
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=SVM_Array
+#SBATCH --job-name=balanced
 #SBATCH --nodes=2
 #SBATCH --ntasks-per-node=2
 #SBATCH --cpus-per-task=2

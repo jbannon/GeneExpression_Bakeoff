@@ -9,7 +9,7 @@
 #SBATCH --array=0-5
 #SBATCH --mail-type=BEGIN,END
 #SBATCH --mail-user=jjb509@nyu.edu
-
+#SBATCH -o ./slurmouts/Atezo/RF_%j.out
 module purge
 
 

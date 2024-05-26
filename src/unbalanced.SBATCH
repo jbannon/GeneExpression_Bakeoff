@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=SVM_Array
+#SBATCH --job-name=unbalanced
 #SBATCH --nodes=2
 #SBATCH --ntasks-per-node=2
 #SBATCH --cpus-per-task=2
@@ -9,7 +9,7 @@
 #SBATCH --array=0-2
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=jjb509@nyu.edu
-#SBATCH -o ./slurmouts/balanced_%j.out
+#SBATCH -o ./slurmouts/unbalanced_%j.out
 
 module purge
 
