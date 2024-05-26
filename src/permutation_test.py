@@ -52,6 +52,13 @@ def main():
 	split_type = split_type.upper()
 	assert split_type in ["LOO","MC"], "split_type must be one of ['MC','LOO']"
 	
+
+	print("\n*********** PERMUTATION TESTS **************")
+	print(f"*\t Working on {drug}")
+	print(f"*\t In {tissue}")
+	print(f"*\t Using a {split_type} split.")
+	print(f"*\t And a {model} Model")
+	print("\n*************************\n")
 	train_pct:float = 0.8
 	test_type:int = 1
 	seed:int = 12345
@@ -80,7 +87,7 @@ def main():
 
 
 
-	genesets:List[str] = ['cosmic','EXPRESSION','FEATURES']#,'kegg','vogelstein','mdsig','auslander','EXPRESSION','FEATURES']
+	genesets:List[str] = ['cosmic','kegg','vogelstein','mdsig','auslander','EXPRESSION','FEATURES']
 
 	expr_file = f"../expression/{ds_string}/{drug}/{tissue}/expression_full.csv"
 	resp_file = f"../expression/{ds_string}/{drug}/{tissue}/response.csv"

@@ -25,9 +25,7 @@ def main():
 	args = vars(parser.parse_args())
 
 	drug:str = args['drug']
-	
 	bal:int = int(args['balance'])
-	
 	balanced_weights:bool = bal == 1
 	bal_string = 'balanced' if balanced_weights else 'unbalanced'
 	
@@ -36,6 +34,7 @@ def main():
 	rng_seed:int = 123450
 	rng = np.random.RandomState(rng_seed)
 	
+
 
 	tissues = utils.DRUG_TISSUE_MAP[drug]
 	gene_sets:List[str] = ['cosmic1','cosmic2','cosmic','kegg','vogelstein','mdsig','auslander']
@@ -46,6 +45,13 @@ def main():
 	
 	covariate_sets = gene_sets + feature_sets
 	# covariate_sets = feature_sets
+
+
+	print("\n*********** FEATURE BAKEOFF **************")
+	print(f"*\t Working on {drug}")
+	print(f"*\t Using a {bal_string} weights")
+	print("\n*************************\n")
+
 	for tissue in tqdm.tqdm(tissues):
 		
 		expression_file = f"../expression/cri/{drug}/{tissue}/expression_full.csv"
