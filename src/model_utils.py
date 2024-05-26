@@ -21,7 +21,7 @@ def make_model_and_param_grid(
 		param_grid = {
 			'clf__n_estimators':[2**j for j in range(6)],
 			'clf__max_depth':[2**j for j in range(6)],
-			'clf__min_samples_leaf':[3,5,7]
+			'clf__min_samples_leaf':[3,5,7,9,11,13,15,20]
 		}
 		# param_grid = {
 		# 	'clf__n_estimators':[2**j for j in range(2)],
@@ -41,7 +41,7 @@ def make_model_and_param_grid(
 	elif model_name == "RBF_SVC":
 	
 		model = Pipeline([('scale',StandardScaler()),
-			('clf',SVC(class_weight = 'balanced'))])
+			('clf',SVC(class_weight = bal_status))])
 		param_grid = {
 			'clf__C':[10**j for j in np.linspace(-5,0.5,20)],
 			'clf__gamma':['scale','auto']+[x for x in np.linspace(2,200,50)]
@@ -49,7 +49,7 @@ def make_model_and_param_grid(
 	
 	elif model_name == "Poly_SVC":
 		model = Pipeline([('scale',StandardScaler()),
-			('clf',SVC(kernel = 'poly',class_weight = 'balanced'))])
+			('clf',SVC(kernel = 'poly',class_weight = bal_status))])
 		param_grid = {
 			'clf__C':[10**j for j in np.linspace(-5,0.5,20)],
 			'clf__degree':np.arange(1,6)
@@ -58,7 +58,7 @@ def make_model_and_param_grid(
 	elif model_name == 'Linear_SVC':
 	
 		model = Pipeline([('scale',StandardScaler()),
-			('clf',LinearSVC(max_iter = 1000000, class_weight = 'balanced',dual ='auto'))])
+			('clf',LinearSVC(max_iter = 1000000, class_weight = bal_status,dual ='auto'))])
 		param_grid = {
 			'clf__penalty':['l1','l2'],
 			'clf__C':[10**j for j in np.linspace(-5,0.5,20)],

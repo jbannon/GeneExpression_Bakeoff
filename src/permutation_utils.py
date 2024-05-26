@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 import tqdm 
-from typing import List
+from typing import List,Dict
 import time 
 from sklearn.model_selection import GridSearchCV
 import pandas as pd
@@ -16,7 +16,35 @@ from sklearn.metrics import accuracy_score, roc_auc_score
 import argparse
 import permutation_utils as pu
 
+def run_and_report_monte_carlo(
+	X:np.ndarray,
+	y:np.ndarray, 
+	model,
+	param_grid:Dict,
+	num_splits:int,
+	train_pct:float,
+	rstate):
+	
+	
+	accs, roc_aucs,bal_accs = [],[],[]
+	
+	for i in tqdm.tqdm(range(num_splits),leave=False):					
+		X_train, X_test, y_train, y_test = train_test_split(X, y, train_size = train_pct, random_state=rstate)
+		clf = GridSearchCV(model, param_grid)
+		clf.fit(X_train,y_train)
+		pred_bins = clf.predict(X_test)
+		pred_probs = clf.predict_proba(X_test)
+		
+		acc = accuracy_score(y_test, pred_bins)
+		roc_auc = roc_auc_score(y_test,pred_probs[:,1])
+		bal_acc = balanced_accuracy_score(y_test, pred_bins)
+		
+		accs.append(acc)
+		bal_accs.append(bal_acc)
+		roc_aucs.append(roc_auc)
 
+
+	return accs, roc_aucs, bal_accs
 
 def run_and_report_loocv(X, y, model, param_grid):
 	binary_predictions = []
@@ -39,7 +67,8 @@ def run_and_report_loocv(X, y, model, param_grid):
 	acc = accuracy_score(true_values, binary_predictions)
 	roc_auc = roc_auc_score(true_values,probability_predictions)
 	bal_acc = balanced_accuracy_score(true_values,binary_predictions)
-	return acc, roc_auc, bal_acc
+	
+	return [acc], [roc_auc], [bal_acc]
 	
 
 
@@ -49,8 +78,13 @@ def make_permuted_dataset(X_, y_, rng, test_type = 1):
 	if test_type ==1:
 		y = rng.permutation(y_)
 		X = X_.copy()
-	else:
-		pass 
+	elif test_type==2:
+		raise NotImplementedError
+# 		for c in pd.unique(y_):
+# 			resp_idxs = np.where(y_==c)[0]
+# # 		num_resp = len(resp_idxs)
+##			stack columns
+
 
 	return X,y
 
@@ -71,69 +105,50 @@ def make_balanced_dataset(X_full:np.array, y_full:np.array, rng):
 	y = y_full[ds_idxs].copy()
 
 	return X,y
-
-def run_balanced_test(
-	X_full:np.ndarray, 
-	y_full:np.array,
-	num_balanced_datasets:int,
-	num_permutations:int,
-	test_type:int, 
-	model_name:str,
-	rng)->pd.DataFrame:
-	
-	results = defaultdict(list)
-
-	model, param_grid = mu.make_model_and_param_grid(model_name)
-
-	for ds_id in tqdm.tqdm(range(num_balanced_datasets),leave=False):
-		X_,y_ = make_balanced_dataset(X_full,y_full,rng)
-		acc, roc_auc, bal_acc = run_and_report_loocv(X_,y_,model,param_grid)
-		results['balanced_id'].append(ds_id)
-		results['data'].append('original')
-		results['accuracy'].append(acc)
-		results['roc_auc'].append(roc_auc)
-		results['balanced_accuarcy'].append(bal_acc)
-
-		for perm in tqdm.tqdm(range(num_permutations),leave=False):
-			X,y = make_permuted_dataset(X_, y_, rng)
-			acc, roc_auc,bal_acc = run_and_report_loocv(X,y, model, param_grid)
-			results['balanced_id'].append(ds_id)
-			results['data'].append(f"permutation {perm}")
-			results['accuracy'].append(acc)
-			results['roc_auc'].append(roc_auc)
-			results['balanced_accuarcy'].append(bal_acc)
-
-	results = pd.DataFrame(results)
-	return results
-
-
-def run_full_test(
+		
+def run_perm_test(
 	X_full:np.ndarray, 
 	y_full:np.array,
 	num_permutations:int,
 	test_type:int, 
+	split_type:str,
 	model_name:str,
-	rng)->pd.DataFrame:
+	num_splits:int,
+	train_pct:float,
+	rng,
+	rstate)->pd.DataFrame:
 	
 
 	results = defaultdict(list)
 
 	model, param_grid = mu.make_model_and_param_grid(model_name)
 
-	acc, roc_auc, bal_acc = run_and_report_loocv(X_full,y_full,model,param_grid)
-	
-	results['data'].append('original')
-	results['accuracy'].append(acc)
-	results['roc_auc'].append(roc_auc)
-	results['balanced_accuracy'].append(bal_acc)
+	if split_type=='LOO':
+		accs, roc_aucs, bal_accs = run_and_report_loocv(X_full,y_full,model,param_grid)
+		results['data'].extend(1*['original'])
+		
+	elif split_type =="MC":
+		accs, roc_aucs, bal_accs = run_and_report_monte_carlo(X_full,y_full, model, param_grid, num_splits,train_pct,rstate)
+		results['data'].extend(num_splits*['original'])
+		
+	results['accuracy'].extend(accs)
+	results['roc_auc'].extend(roc_aucs)
+	results['balanced_accuracy'].extend(bal_accs)
+
+
 
 	for perm in tqdm.tqdm(range(num_permutations),leave=False):
 		X,y = make_permuted_dataset(X_full, y_full, rng)
-		acc, roc_auc,bal_acc = run_and_report_loocv(X,y, model, param_grid)
+		if split_type=="LOO":
+			acc, roc_auc,bal_acc = run_and_report_loocv(X,y, model, param_grid)
+		elif split_type == "MC":
+			acc, roc_auc,bal_acc = run_and_report_monte_carlo(X,y, model, param_grid, 1,train_pct,rstate)
 		results['data'].append(f"permutation {perm}")
-		results['accuracy'].append(acc)
-		results['roc_auc'].append(roc_auc)
-		results['balanced_accuracy'].append(bal_acc)
+		results['accuracy'].extend(acc)
+		results['roc_auc'].extend(roc_auc)
+		results['balanced_accuracy'].extend(bal_acc)
+	results = pd.DataFrame(results)
+	return results
 
 
 	results = pd.DataFrame(results)

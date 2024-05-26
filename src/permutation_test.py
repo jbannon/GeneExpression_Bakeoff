@@ -21,33 +21,55 @@ import utils
 
 def main():
 
-	# args
+	"""
+	Running 
+		- drug (the drug under consideration)
+		- tissue (the tissue the drug is looking at)
+		- model (the type of model we're using)
+		- split
+
+		ex: 
+
+		python3 permutation_test.py -drug Atezo -model RandomForest -settings BLCA.LOO
+	"""
+
+
+
 	parser = argparse.ArgumentParser("model specific bake-off")
 	parser.add_argument('-drug',help = "drug being tested")
-	parser.add_argument('-settings', help = "setting string of the form tissue.balance")
+	parser.add_argument('-model',help = "Classifier model class")
+	parser.add_argument('-settings', help = "setting string of the form tissue.split")
 	
 
 	args = vars(parser.parse_args())
 
 	drug:str = args['drug']
-	
+	model:str = args['model']
 	settings:str = args['settings'].split(".")
 	
-	tissue,balanced = settings[0],settings[1]
+	tissue, split_type = settings[0],settings[1]
 	
-	model:str = "RandomForest"
+	split_type = split_type.upper()
+	assert split_type in ["LOO","MC"], "split_type must be one of ['MC','LOO']"
+	
+	train_pct:float = 0.8
 	test_type:int = 1
-	seed:int = 1234
-	bal_string = "balanced" if balanced=='True' else "unbalanced"
+	seed:int = 12345
 	
+	
+	test_string = "Type_A" if test_type == 1 else "Type_B"
 
-
-	res_dir = f"../results/{drug}/{tissue}/perm_tests/"
+	res_dir = f"../results/{drug}/{tissue}/perm_tests/{test_string}/"
 
 	os.makedirs(res_dir,exist_ok = True)
 	
-	num_balanced_datasets:int = 10
-	num_permutations:int = 50
+	num_splits:int = 10
+	num_permutations:int
+
+	if split_type == "MC":
+		num_permutations = 100
+	elif split_type == "LOO":
+		num_permutations = 50
 	
 	icis = ['Atezo','Pembro','Ipi', 'Nivo']
 	ds_string = "cri" if drug in icis else "ccle"
@@ -58,7 +80,7 @@ def main():
 
 
 
-	genesets:List[str] = ['EXPRESSION','FEATURES']
+	genesets:List[str] = ['cosmic','EXPRESSION','FEATURES']#,'kegg','vogelstein','mdsig','auslander','EXPRESSION','FEATURES']
 
 	expr_file = f"../expression/{ds_string}/{drug}/{tissue}/expression_full.csv"
 	resp_file = f"../expression/{ds_string}/{drug}/{tissue}/response.csv"
@@ -71,50 +93,48 @@ def main():
 	features = pd.read_csv(feat_file)
 
 	full_results = []
+	
 	for gs in tqdm.tqdm(genesets,leave= False):
 		if gs =='EXPRESSION':
 			
-
-
-			# with open("../genesets/{g}.txt".format(g=gs),"r") as istream:
-			# 	lines = istream.readlines()
-			# lines = [x.rstrip() for x in lines]
 			genes = utils.fetch_union_genesets()
-
 			keep_cols = [x for x in expression.columns if x in genes]
 			X_full = np.log2(expression[keep_cols].values+1)
 		
-		else:
+		elif gs=='FEATURES':
+			
 			X_full = features[features.columns[1:]].values
-		
+		else:
+			
+			genes = utils.fetch_geneset(gs)
+			keep_cols = [x for x in expression.columns if x in genes]
+			X_full = np.log2(expression[keep_cols].values+1)
+			
 		y_full = response['Response'].values
 
 
 		# X_full, y_full are the original unpermuted or subsampled datasets
+		
+		results = pu.run_perm_test(
+			X_full, 
+			y_full, 
+			num_permutations,
+			test_type,
+			split_type,
+			model,
+			num_splits,
+			train_pct,
+			rng,
+			rstate)
+		
 
-		if balanced.lower()=="true":
-			results = pu.run_balanced_test(
-				X_full, 
-				y_full, 
-				num_balanced_datasets, 
-				num_permutations,
-				test_type,
-				model,
-				rng)
-		else:
-			results = pu.run_full_test(
-				X_full, 
-				y_full, 
-				num_permutations,
-				test_type,
-				model,
-				rng)
 		
 		results['geneset'] = gs
 		full_results.append(results)
 	results = pd.concat(full_results,axis=0)
-	fname = f"{res_dir}{bal_string}.csv"
+	fname = f"{res_dir}/{split_type}.csv"
 	results.to_csv(fname, index=False)
+
 if __name__ == '__main__':
 	main()
 		

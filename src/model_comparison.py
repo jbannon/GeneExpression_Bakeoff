@@ -28,7 +28,7 @@ def main():
 	
 	bal:int = int(args['balance'])
 	
-	balanced_weights:bool = bal ==1
+	balanced_weights:bool = bal == 1
 	bal_string = 'balanced' if balanced_weights else 'unbalanced'
 	
 	num_iters:int = 25
