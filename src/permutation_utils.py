@@ -29,7 +29,7 @@ def run_and_report_monte_carlo(
 	accs, roc_aucs,bal_accs = [],[],[]
 	
 	for i in tqdm.tqdm(range(num_splits),leave=False):					
-		X_train, X_test, y_train, y_test = train_test_split(X, y, train_size = train_pct, random_state=rstate)
+		X_train, X_test, y_train, y_test = train_test_split(X, y, train_size = train_pct, random_state=rstate,stratify=y)
 		clf = GridSearchCV(model, param_grid)
 		clf.fit(X_train,y_train)
 		pred_bins = clf.predict(X_test)

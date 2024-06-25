@@ -23,3 +23,4 @@ singularity exec --nv \
             /scratch/work/public/singularity/cuda11.6.124-cudnn8.4.0.27-devel-ubuntu20.04.4.sif\
             /bin/bash -c "source /ext3/env.sh; python permutation_test.py -drug Pembro -model LogisticRegression -settings ${settings[$SLURM_ARRAY_TASK_ID]}"
 
+

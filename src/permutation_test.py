@@ -74,9 +74,9 @@ def main():
 	num_permutations:int
 
 	if split_type == "MC":
-		num_permutations = 100
+		num_permutations = 10
 	elif split_type == "LOO":
-		num_permutations = 50
+		num_permutations = 10
 	
 	icis = ['Atezo','Pembro','Ipi', 'Nivo']
 	ds_string = "cri" if drug in icis else "ccle"
