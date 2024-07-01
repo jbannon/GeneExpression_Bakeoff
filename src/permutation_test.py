@@ -66,7 +66,7 @@ def main():
 	
 	test_string = "Type_A" if test_type == 1 else "Type_B"
 
-	res_dir = f"../results/{drug}/{tissue}/perm_tests/{test_string}/"
+	res_dir = f"../results/{drug}/{tissue}/perm_tests/{model}/{test_string}/"
 
 	os.makedirs(res_dir,exist_ok = True)
 	
