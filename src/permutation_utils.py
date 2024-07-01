@@ -29,7 +29,9 @@ def run_and_report_monte_carlo(
 	accs, roc_aucs,bal_accs = [],[],[]
 	
 	for i in tqdm.tqdm(range(num_splits),leave=False):					
-		X_train, X_test, y_train, y_test = train_test_split(X, y, train_size = train_pct, random_state=rstate,stratify=y)
+		X_train, X_test, y_train, y_test = train_test_split(X, y, train_size = train_pct, random_state=rstate)
+		while len(set(y_train))<2 or len(set(y_test))<2:
+			X_train, X_test, y_train, y_test = train_test_split(X, y, train_size = train_pct, random_state=rstate)
 		clf = GridSearchCV(model, param_grid)
 		clf.fit(X_train,y_train)
 		pred_bins = clf.predict(X_test)
@@ -80,10 +82,7 @@ def make_permuted_dataset(X_, y_, rng, test_type = 1):
 		X = X_.copy()
 	elif test_type==2:
 		raise NotImplementedError
-# 		for c in pd.unique(y_):
-# 			resp_idxs = np.where(y_==c)[0]
-# # 		num_resp = len(resp_idxs)
-##			stack columns
+
 
 
 	return X,y

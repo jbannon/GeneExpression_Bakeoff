@@ -74,7 +74,7 @@ def main():
 	num_permutations:int
 
 	if split_type == "MC":
-		num_permutations = 10
+		num_permutations = 25
 	elif split_type == "LOO":
 		num_permutations = 10
 	
