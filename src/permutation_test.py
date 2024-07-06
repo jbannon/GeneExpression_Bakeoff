@@ -70,13 +70,13 @@ def main():
 
 	os.makedirs(res_dir,exist_ok = True)
 	
-	num_splits:int = 10
+	num_splits:int = 25
 	num_permutations:int
 
 	if split_type == "MC":
 		num_permutations = 25
 	elif split_type == "LOO":
-		num_permutations = 10
+		num_permutations = 5
 	
 	icis = ['Atezo','Pembro','Ipi', 'Nivo']
 	ds_string = "cri" if drug in icis else "ccle"
