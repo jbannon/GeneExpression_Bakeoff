@@ -95,7 +95,7 @@ def main():
 
 
 	genesets:List[str] = ['cosmic','kegg','vogelstein','mdsig','auslander','EXPRESSION','FEATURES']
-	genesets:List[str] = ['auslander','EXPRESSION','FEATURES']
+	# genesets:List[str] = ['auslander','EXPRESSION','FEATURES']
 
 
 	expr_file = f"../expression/{ds_string}/{drug}/{tissue}/expression_full.csv"
