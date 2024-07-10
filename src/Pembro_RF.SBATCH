@@ -6,7 +6,7 @@
 #SBATCH --cpus-per-task=2
 #SBATCH --time=120:00:00
 #SBATCH --mem=20GB
-#SBATCH --array=0-5
+#SBATCH --array=0-2
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=jjb509@nyu.edu
 #SBATCH -o ./slurmouts/Pembro/RF_%j.out
@@ -16,7 +16,7 @@ module purge
 
 
 
-settings=(STAD.MC STAD.LOO SKCM.MC SKCM.LOO PANCAN.MC PANCAN.LOO)
+settings=(STAD.MC SKCM.MC PANCAN.MC)
 
 singularity exec --nv \
             --overlay /scratch/jjb509/GeneExpression_Bakeoff/src/my_overlay.ext3:ro \

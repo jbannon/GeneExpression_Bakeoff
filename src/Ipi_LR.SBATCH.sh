@@ -1,26 +1,22 @@
 #!/bin/bash
 
-#SBATCH --job-name=Pembro_LR
+#SBATCH --job-name=Ipi_LR
 #SBATCH --nodes=2
 #SBATCH --ntasks-per-node=2
 #SBATCH --cpus-per-task=2
 #SBATCH --time=120:00:00
 #SBATCH --mem=20GB
-#SBATCH --array=0-2
+#SBATCH --array=0-0
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=jjb509@nyu.edu
-#SBATCH -o ./slurmouts/Pembro/LR_%j.out
+#SBATCH -o ./slurmouts/Ipi/LR_%j.out
 
 module purge
 
 
-
-
-settings=(STAD.MC SKCM.MC PANCAN.MC)
+settings=(SKCM.MC)
 
 singularity exec --nv \
             --overlay /scratch/jjb509/GeneExpression_Bakeoff/src/my_overlay.ext3:ro \
             /scratch/work/public/singularity/cuda11.6.124-cudnn8.4.0.27-devel-ubuntu20.04.4.sif\
-            /bin/bash -c "source /ext3/env.sh; python permutation_test.py -drug Pembro -model LogisticRegression -settings ${settings[$SLURM_ARRAY_TASK_ID]}"
-
-
+            /bin/bash -c "source /ext3/env.sh; python permutation_test.py -drug Ipi -model LogisticRegression -settings ${settings[$SLURM_ARRAY_TASK_ID]}"

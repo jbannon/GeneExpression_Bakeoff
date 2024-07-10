@@ -71,8 +71,15 @@ def main():
 	os.makedirs(res_dir,exist_ok = True)
 	
 	num_splits:int = 25
+	num_perm_splits:int = 25
 	num_permutations:int
 
+	if drug=='Ipi':
+		num_folds = 3
+	else:
+		num_folds = 5
+
+	
 	if split_type == "MC":
 		num_permutations = 25
 	elif split_type == "LOO":
@@ -88,6 +95,8 @@ def main():
 
 
 	genesets:List[str] = ['cosmic','kegg','vogelstein','mdsig','auslander','EXPRESSION','FEATURES']
+	genesets:List[str] = ['auslander','EXPRESSION','FEATURES']
+
 
 	expr_file = f"../expression/{ds_string}/{drug}/{tissue}/expression_full.csv"
 	resp_file = f"../expression/{ds_string}/{drug}/{tissue}/response.csv"
@@ -98,6 +107,7 @@ def main():
 	expression = pd.read_csv(expr_file)
 	response = pd.read_csv(resp_file)
 	features = pd.read_csv(feat_file)
+	
 
 	full_results = []
 	
@@ -114,6 +124,7 @@ def main():
 		else:
 			
 			genes = utils.fetch_geneset(gs)
+			
 			keep_cols = [x for x in expression.columns if x in genes]
 			X_full = np.log2(expression[keep_cols].values+1)
 			
@@ -132,7 +143,9 @@ def main():
 			num_splits,
 			train_pct,
 			rng,
-			rstate)
+			rstate,
+			num_perm_splits,
+			num_folds)
 		
 
 		

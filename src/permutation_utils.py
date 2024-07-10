@@ -23,7 +23,8 @@ def run_and_report_monte_carlo(
 	param_grid:Dict,
 	num_splits:int,
 	train_pct:float,
-	rstate):
+	rstate,
+	num_folds:int=5):
 	
 	
 	accs, roc_aucs,bal_accs = [],[],[]
@@ -32,7 +33,7 @@ def run_and_report_monte_carlo(
 		X_train, X_test, y_train, y_test = train_test_split(X, y, train_size = train_pct, random_state=rstate)
 		while len(set(y_train))<2 or len(set(y_test))<2:
 			X_train, X_test, y_train, y_test = train_test_split(X, y, train_size = train_pct, random_state=rstate)
-		clf = GridSearchCV(model, param_grid)
+		clf = GridSearchCV(model, param_grid,cv=num_folds)
 		clf.fit(X_train,y_train)
 		pred_bins = clf.predict(X_test)
 		pred_probs = clf.predict_proba(X_test)
@@ -82,7 +83,10 @@ def make_permuted_dataset(X_, y_, rng, test_type = 1):
 		X = X_.copy()
 	elif test_type==2:
 		raise NotImplementedError
-
+# 		for c in pd.unique(y_):
+# 			resp_idxs = np.where(y_==c)[0]
+# # 		num_resp = len(resp_idxs)
+##			stack columns
 
 
 	return X,y
@@ -115,7 +119,9 @@ def run_perm_test(
 	num_splits:int,
 	train_pct:float,
 	rng,
-	rstate)->pd.DataFrame:
+	rstate,
+	num_perm_splits:int=1,
+	num_folds:int=5)->pd.DataFrame:
 	
 
 	results = defaultdict(list)
@@ -127,7 +133,7 @@ def run_perm_test(
 		results['data'].extend(1*['original'])
 		
 	elif split_type =="MC":
-		accs, roc_aucs, bal_accs = run_and_report_monte_carlo(X_full,y_full, model, param_grid, num_splits,train_pct,rstate)
+		accs, roc_aucs, bal_accs = run_and_report_monte_carlo(X_full,y_full, model, param_grid, num_splits,train_pct,rstate,num_folds)
 		results['data'].extend(num_splits*['original'])
 		
 	results['accuracy'].extend(accs)
@@ -141,14 +147,14 @@ def run_perm_test(
 		if split_type=="LOO":
 			acc, roc_auc,bal_acc = run_and_report_loocv(X,y, model, param_grid)
 		elif split_type == "MC":
-			acc, roc_auc,bal_acc = run_and_report_monte_carlo(X,y, model, param_grid, 1,train_pct,rstate)
-		results['data'].append(f"permutation {perm}")
+			acc, roc_auc,bal_acc = run_and_report_monte_carlo(X,y, model, param_grid, num_perm_splits,train_pct,rstate,num_folds)
+		results['data'].extend([f"permutation {perm}"]*num_splits)
 		results['accuracy'].extend(acc)
 		results['roc_auc'].extend(roc_auc)
 		results['balanced_accuracy'].extend(bal_acc)
-	results = pd.DataFrame(results)
-	return results
+	
 
 
 	results = pd.DataFrame(results)
 	return results
+

@@ -6,7 +6,7 @@
 #SBATCH --cpus-per-task=2
 #SBATCH --time=120:00:00
 #SBATCH --mem=20GB
-#SBATCH --array=0-5
+#SBATCH --array=0-2
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=jjb509@nyu.edu
 #SBATCH -o ./slurmouts/Nivo/LR_%j.out
@@ -14,7 +14,7 @@
 module purge
 
 
-settings=(KIRC.LOO KIRC.MC SKCM.LOO SKCM.MC PANCAN.LOO PANCAN.MC)
+settings=(KIRC.MC SKCM.MC PANCAN.MC)
 
 singularity exec --nv \
             --overlay /scratch/jjb509/GeneExpression_Bakeoff/src/my_overlay.ext3:ro \
