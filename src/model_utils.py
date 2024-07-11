@@ -35,7 +35,7 @@ def make_model_and_param_grid(
 			('clf',LogisticRegression(max_iter = 10000, solver = 'liblinear', class_weight = bal_status))])
 		param_grid = {
 			'clf__penalty':['l1','l2'],
-			'clf__C':[10**j for j in np.linspace(-5,0.5,50)]
+			'clf__C':[10**j for j in np.linspace(-5,1,50)]
 		}
 	
 	elif model_name == "RBF_SVC":
