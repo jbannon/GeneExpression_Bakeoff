@@ -92,7 +92,7 @@ def main():
 	rng = np.random.default_rng(seed)
 	rstate = np.random.RandomState(seed)
 
-
+	imm_feat = ['Miracle','TIDE','TIDE_Dysfunction','TIDE_Exclusion']
 
 	genesets:List[str] = ['cosmic','kegg','vogelstein','mdsig','auslander','EXPRESSION','FEATURES']
 	# genesets:List[str] = ['auslander','EXPRESSION','FEATURES']
@@ -107,6 +107,7 @@ def main():
 	expression = pd.read_csv(expr_file)
 	response = pd.read_csv(resp_file)
 	features = pd.read_csv(feat_file)
+	features = features[['Run_ID']+imm_feat]
 	
 
 	full_results = []
@@ -114,8 +115,9 @@ def main():
 	for gs in tqdm.tqdm(genesets,leave= False):
 		if gs =='EXPRESSION':
 			
-			genes = utils.fetch_union_genesets()
-			keep_cols = [x for x in expression.columns if x in genes]
+			# genes = utils.fetch_union_genesets()
+			# keep_cols = [x for x in expression.columns if x in genes]
+			keep_cols = [x for x in expression.columns[1:]]
 			X_full = np.log2(expression[keep_cols].values+1)
 		
 		elif gs=='FEATURES':
@@ -130,7 +132,7 @@ def main():
 			
 		y_full = response['Response'].values
 
-
+		
 		# X_full, y_full are the original unpermuted or subsampled datasets
 		
 		results = pu.run_perm_test(
