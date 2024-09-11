@@ -1,0 +1,13 @@
+Drug,Metric,Best Feature,Model,Tissue,Mean Metric value,p value
+Pembro,accuracy,ALL,LogisticRegression,STAD,0.8266666666666667,<0.005
+Pembro,balanced_accuracy,ALL,LogisticRegression,STAD,0.8062857142857144,<0.005
+Pembro,roc_auc,ALL,LogisticRegression,STAD,0.9136031746031746,<0.005
+Pembro,accuracy,IMM. FEAT,RandomForest,STAD,0.8577777777777778,<0.005
+Pembro,balanced_accuracy,IMM. FEAT,RandomForest,STAD,0.7482857142857142,<0.005
+Pembro,roc_auc,IMM. FEAT,RandomForest,STAD,0.8443015873015873,<0.005
+Pembro,accuracy,IMM. FEAT,LogisticRegression,SKCM,0.6553846153846153,<0.005
+Pembro,balanced_accuracy,IMM. FEAT,LogisticRegression,SKCM,0.6427181380710791,<0.005
+Pembro,roc_auc,IMM. FEAT,LogisticRegression,SKCM,0.7073011445568007,<0.005
+Pembro,accuracy,IMM. FEAT,RandomForest,SKCM,0.6569230769230769,<0.005
+Pembro,balanced_accuracy,IMM. FEAT,RandomForest,SKCM,0.6454681658211069,<0.005
+Pembro,roc_auc,IMM. FEAT,RandomForest,SKCM,0.7127328271904063,<0.005

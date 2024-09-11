@@ -4,6 +4,7 @@ from typing import List
 DRUG_TISSUE_MAP = {'Atezo':['BLCA','KIRC','PANCAN'],
 	'Nivo':['SKCM','KIRC','PANCAN'],
 	'Pembro':['STAD','SKCM','PANCAN'],
+	'Ipi':['SKCM'],
 	'Ipi+Pembro':['SKCM']}
 
 

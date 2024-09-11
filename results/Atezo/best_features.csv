@@ -1,0 +1,13 @@
+Drug,Metric,Best Feature,Model,Tissue,Mean Metric value,p value
+Atezo,accuracy,CGL,LogisticRegression,KIRC,0.7152941176470589,0.10244858051692474
+Atezo,balanced_accuracy,IMM. FEAT,LogisticRegression,KIRC,0.5284161780248736,0.029011872150440474
+Atezo,roc_auc,IMM. FEAT,LogisticRegression,KIRC,0.5847430295952035,<0.005
+Atezo,accuracy,KEGG,RandomForest,KIRC,0.7094117647058823,0.02726218603593384
+Atezo,balanced_accuracy,KEGG,RandomForest,KIRC,0.536536682297102,0.0169781253562489
+Atezo,roc_auc,ALL,RandomForest,KIRC,0.6062875353568238,<0.005
+Atezo,accuracy,MDSIG-DB,LogisticRegression,BLCA,0.786,0.037548163199805994
+Atezo,balanced_accuracy,MDSIG-DB,LogisticRegression,BLCA,0.5455542936036618,<0.005
+Atezo,roc_auc,ALL,LogisticRegression,BLCA,0.659492966779283,<0.005
+Atezo,accuracy,MDSIG-DB,RandomForest,BLCA,0.7760000000000001,0.3162534475114125
+Atezo,balanced_accuracy,MDSIG-DB,RandomForest,BLCA,0.5361918105168001,<0.005
+Atezo,roc_auc,ALL,RandomForest,BLCA,0.6300356678060914,<0.005

@@ -1,0 +1,13 @@
+Drug,Metric,Best Feature,Model,Tissue,Mean Metric value,p value
+Nivo,accuracy,IMM. FEAT,LogisticRegression,SKCM,0.6872727272727271,0.07267419533239355
+Nivo,balanced_accuracy,IMM. FEAT,LogisticRegression,SKCM,0.5968605430517195,<0.005
+Nivo,roc_auc,IMM. FEAT,LogisticRegression,SKCM,0.6855165419102585,<0.005
+Nivo,accuracy,COSMIC,RandomForest,SKCM,0.7163636363636364,<0.005
+Nivo,balanced_accuracy,COSMIC,RandomForest,SKCM,0.598181172198974,<0.005
+Nivo,roc_auc,IMPRES,RandomForest,SKCM,0.6532501775556588,<0.005
+Nivo,accuracy,KEGG,LogisticRegression,KIRC,0.8133333333333335,<0.005
+Nivo,balanced_accuracy,MDSIG-DB,LogisticRegression,KIRC,0.508,0.06587381923087895
+Nivo,roc_auc,ALL,LogisticRegression,KIRC,0.5,0.0063667303313827295
+Nivo,accuracy,KEGG,RandomForest,KIRC,0.8,<0.005
+Nivo,balanced_accuracy,ALL,RandomForest,KIRC,0.512,0.09704522298721716
+Nivo,roc_auc,IMM. FEAT,RandomForest,KIRC,0.5429999999999999,0.7560803138058297
